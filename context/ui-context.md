@@ -1,6 +1,6 @@
 # UI Context
 
-Source: Esplenin Hotel Project Documentation v0.3 (S04). Design references R1 to R11 are the 11 images Monty provided.
+Source: Esplenin Hotel Project Documentation v0.4 (S04). Design references R1 to R11 are the 11 images Monty provided.
 
 ## Theme
 

@@ -4,16 +4,16 @@ Update this file after every meaningful implementation change.
 
 ## Current Phase
 
-- Not started. Planning is complete (docs v0.3). Implementation begins with Phase 0 Foundation
+- Not started. Planning is complete (docs v0.4, schema v4.1). Implementation begins with Phase 0 Foundation
 
 ## Current Goal
 
-- Fill in and confirm the context files, then start Phase 0 (Foundation): repositories, CI, Docker Compose, staging, migrations, sign-in, roles and branch rules
+- Start Phase 0 (Foundation): repositories, CI, Docker Compose, staging, migrations (a new `V1__init.sql` from schema v4.1), sign-in, roles and branch rules
 
 ## Completed
 
-- Project Documentation v0.3 (2026-11-15), all open items closed
-- Database schema v3.1 (35 tables) exists as a separate file. It does not match v0.3 yet
+- Project Documentation v0.4 (2026-11-24): brought in line with schema v4.1. v0.3 (2026-11-15) closed all open items
+- Database schema v4.1 (39 tables) written as `hotel_schema_v4.1.md` (2026-11-24). Not yet run against Postgres. The Neon `public` schema was reset on both branches; the old Flyway V1 and V2 files are still to be replaced by the new V1
 - Context files drafted from v0.3: project-overview, architecture, code-standards, ui-context, ai-workflow-rules
 
 ## In Progress
@@ -26,12 +26,9 @@ Update this file after every meaningful implementation change.
 
 ## Open Questions
 
-- Schema file update to v0.3 (25 changes in S09). Waiting for Monty's go
+- Write `V1__init.sql` from `hotel_schema_v4.1.md` and run it on a throwaway Postgres 18 before it goes near Neon
 - UI: tokens, fonts (all free, OFL) and scaling are set in `ui-context.md`. Still to do: verify contrast of the status chips and `--text-muted` with a checker, and confirm French accent coverage of the fonts
-- ID document list: S04 says Passport, Driver's license, National ID, Other; the schema also has Residence permit. Pick one
-- Exact build and test commands and script names (`mvn verify`? `npm test`?) to confirm
 - Exact folder layout inside both repos is not defined
-- The pay-after-checkout email code is 6 digits, valid 10 minutes, with unlimited verification attempts. Confirm the verify endpoint has its own rate limit, otherwise the code can be brute-forced
 - Oracle Always Free may reclaim an idle server. Check CPU, network and memory after one week
 
 ## Architecture Decisions
@@ -45,6 +42,9 @@ Update this file after every meaningful implementation change.
 - No cancellation, late-cancellation or no-show fees; all refunds are automatic (simpler rules, no approvers)
 - No-show cutoff is the end of the check-in date in branch timezone; Pending reservations expire at the same moment
 - Date changes: guests cannot change; a Receptionist can change twice, then a Supervisor must allow it with a reason
+- Check-in needs the "ID verified?" button first (records who checked the ID and the document type)
+- Pay-after-checkout email code: at most 3 code requests per intent in 15 minutes and 5 wrong guesses per code, counted in the database so checkout never depends on Redis
+- A goodwill refund or room-type change request is never decided by the employee who made it
 - Frontend forwards `/api/*` so cookies stay first-party; NGINX trusts the real-client-IP header only with a shared secret
 - Sign-in events go to Loki only; the database keeps `last_login_at`
 - Self-hosted GitHub runner on the Oracle server; staging exists on the same server

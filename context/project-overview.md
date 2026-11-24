@@ -1,6 +1,6 @@
 # Esplenin Hotel — Reservation & Payment System
 
-Source: Esplenin Hotel Project Documentation v0.3 (2026-11-15). The full document wins over this summary if they disagree.
+Source: Esplenin Hotel Project Documentation v0.4 (2026-11-24). The full document wins over this summary if they disagree.
 
 ## Overview
 
@@ -23,7 +23,7 @@ Esplenin is a web application for a hotel company with several branches in diffe
 4. Card payment through Stripe, or a 6-digit email code for pay after checkout
 5. Reservation is created as Pending and a confirmation email with a private link is sent
 6. A receptionist assigns a matching room: reservation becomes Approved, room becomes Reserved
-7. Check-in (room Occupied), stay with charges, check-out (room Cleaning, then Available)
+7. ID verified, then check-in (room Occupied), stay with charges, check-out (room Cleaning, then Available)
 8. Guest receives a review request
 
 ## Roles

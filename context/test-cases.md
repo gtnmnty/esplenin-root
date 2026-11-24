@@ -1,6 +1,6 @@
 # Test Cases
 
-Project: Esplenin Hotel Reservation and Payment System (docs v0.3)
+Project: Esplenin Hotel Reservation and Payment System (docs v0.4)
 
 Update the Status column after every test run. The test suite and CI are the source of truth for results. This file is the checklist.
 
@@ -37,7 +37,7 @@ Update the Status column after every test run. The test suite and CI are the sou
 
 ## Defaults Used In These Cases (from S08)
 
-Max stay 14 nights. Max advance booking 5 days. Down payment at least 30%. Receptionist date changes 2 per reservation. Email code 6 digits, 10 minutes. 2 active unpaid reservations per email. Sign-in lock after 5 failures in 15 minutes for 30 minutes. Invitation link 48 hours. Reset link 10 minutes. Manage link until 30 days after checkout. If a number changes in S08, change it here too.
+Max stay 14 nights. Max advance booking 5 days. Down payment at least 30%. Receptionist date changes 2 per reservation. Email code 6 digits, 10 minutes, 5 wrong guesses per code, 3 code requests per 15 minutes. 2 active unpaid reservations per email. Sign-in lock after 5 failures in 15 minutes for 30 minutes. Invitation link 48 hours. Reset link 10 minutes. Manage link until 30 days after checkout. If a number changes in S08, change it here too.
 
 ## Guest: Search and Price
 
@@ -82,9 +82,11 @@ Scope items: 6, 7, 8, 9, 15, 22
 | TC-009-01 | 9 | Pay after checkout is offered only when the branch allows it and the email has no outstanding balance | Integration | Must | NOT WRITTEN |  |
 | TC-009-02 | 9 | A correct 6-digit email code creates a Pending reservation | Integration | Must | NOT WRITTEN |  |
 | TC-009-03 | 9 | The code expires after 10 minutes | Unit | Must | NOT WRITTEN | Controllable clock |
-| TC-009-04 | 9 | A wrong code can be retried; the correct code still works within 10 minutes | Integration | Must | NOT WRITTEN | Per S08: no attempt limit |
-| TC-009-05 | 9 | Code verification is rate limited per email and IP | Integration | Must | NOT WRITTEN | Open question in progress-tracker; confirm before writing |
+| TC-009-04 | 9 | A wrong code can be retried; the correct code still works within 10 minutes while fewer than 5 wrong guesses were made | Integration | Must | NOT WRITTEN | Per S08: 5 wrong guesses per code |
+| TC-009-05 | 9 | Code verification is rate limited per email and IP | Integration | Must | NOT WRITTEN | In addition to the per-code and per-intent limits (TC-009-07, TC-009-08) |
 | TC-009-06 | 9 | A third active unpaid reservation by the same email is refused; staff bookings are exempt | Integration | Must | NOT WRITTEN |  |
+| TC-009-07 | 9 | The 5th wrong guess revokes the code; the correct code is refused afterwards and a new code is needed | Integration | Must | NOT WRITTEN | Counter is in the database, not Redis |
+| TC-009-08 | 9 | A fourth code request for the same checkout intent within 15 minutes is refused; a new code revokes the old one | Integration | Must | NOT WRITTEN | Controllable clock |
 | TC-015-01 | 15 | Guest pays the remaining balance online; payment status becomes Paid | Integration | Must | NOT WRITTEN |  |
 | TC-015-02 | 15 | A down payment guest pays only the difference after a staff change | Integration | Should | NOT WRITTEN |  |
 | TC-022-01 | 22 | A guest with an outstanding balance cannot start a new booking at any branch | Integration | Must | NOT WRITTEN |  |
@@ -176,9 +178,10 @@ Scope items: 29, 30, 31, 35, 36, 37
 
 | ID | Scope | Case | Type | Priority | Status | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| TC-029-01 | 29 | Check-in sets the room Occupied and records the ID document type | Integration | Must | NOT WRITTEN |  |
+| TC-029-01 | 29 | Check-in sets the room Occupied; the ID verified step has already recorded the document type | Integration | Must | NOT WRITTEN |  |
 | TC-029-02 | 29 | Check-in is refused while the room is Cleaning | Integration | Must | NOT WRITTEN |  |
-| TC-029-03 | 29 | ID document type list matches the agreed list | Unit | Should | NOT WRITTEN | Open question: residence permit |
+| TC-029-03 | 29 | ID document type list matches the agreed list | Unit | Should | NOT WRITTEN | Passport, Driver's license, National ID, Other |
+| TC-029-04 | 29 | Check-in is refused until the ID verified step is done; the step records who verified and when | Integration | Must | NOT WRITTEN | Database CHECK as well as the service rule |
 | TC-030-01 | 30 | Check-out sets the room Cleaning, then Available after the cleaning time | Integration | Must | NOT WRITTEN | Controllable clock; job runs every minute |
 | TC-030-02 | 30 | Cleaning time 0 skips the Cleaning state | Unit | Should | NOT WRITTEN |  |
 | TC-030-03 | 30 | Check-out with a balance owed is refused unless the guest chose pay after checkout | Integration | Must | NOT WRITTEN |  |
@@ -214,7 +217,9 @@ Scope items: 38, 39, 40, 41, 42, 43, 44
 | TC-038-01 | 38 | Supervisor can void or correct a charge or invoice; the entry is kept and audited with a reason | Integration | Must | NOT WRITTEN |  |
 | TC-039-01 | 39 | Goodwill refund within the branch limit is approved | Integration | Must | NOT WRITTEN |  |
 | TC-039-02 | 39 | Goodwill refund above the limit is refused and goes to a Manager | Integration | Must | NOT WRITTEN |  |
+| TC-039-03 | 39 | The employee who requested a goodwill refund cannot approve or reject it | Integration | Must | NOT WRITTEN | Database CHECK as well as the service rule |
 | TC-040-01 | 40 | Room transfer to a different room type is approved with the price adjusted by the money formula | Integration | Must | NOT WRITTEN |  |
+| TC-040-02 | 40 | The employee who requested a room-type change cannot decide it | Integration | Must | NOT WRITTEN |  |
 | TC-042-01 | 42 | Blocking a room shows it as Unavailable | Integration | Must | NOT WRITTEN |  |
 | TC-042-02 | 42 | Block is refused when an approved reservation holds the room | Integration | Must | NOT WRITTEN |  |
 | TC-042-03 | 42 | Block is refused when it would cause overbooking of the room type | Integration | Must | NOT WRITTEN |  |

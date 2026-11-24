@@ -1,6 +1,6 @@
 # Code Standards
 
-Source: Esplenin Hotel Project Documentation v0.3 (S05 to S13). Where this file is silent, follow the existing code and ask.
+Source: Esplenin Hotel Project Documentation v0.4 (S05 to S13). Where this file is silent, follow the existing code and ask.
 
 ## General
 
@@ -55,7 +55,7 @@ Source: Esplenin Hotel Project Documentation v0.3 (S05 to S13). Where this file 
 - Business data in PostgreSQL. Schema changes only through Flyway migrations (forward only; fix mistakes with a new migration)
 - Reservations and payments are never deleted, only cancelled or voided
 - Audit log is append-only. Write an entry for every important action (including reasons for overrides)
-- Keys are time-ordered UUIDs. Statuses and types are text with a CHECK constraint, not database enums
+- Keys are time-ordered UUIDs (`checkout_intents` uses a random one so it cannot be guessed). Statuses and types are text with a CHECK constraint, not database enums
 - Receipts: JPG, PNG, PDF only, 5 MB max, real file type checked, private Cloudinary files, store only the public id
 - Copy taxes and prices onto the reservation at booking time
 

@@ -1,6 +1,6 @@
 # Architecture Context
 
-Source: Esplenin Hotel Project Documentation v0.3 (S05, S06, S07, S08, S09, S12). Numbers and limits live in S08 Default Values.
+Source: Esplenin Hotel Project Documentation v0.4 (S05, S06, S07, S08, S09, S12). Numbers and limits live in S08 Default Values.
 
 ## Stack
 
@@ -53,7 +53,7 @@ Frontend (Next.js App Router) route groups: public guest pages, `/staff/*`, `/ad
 - **Loki (via Logback JSON + Alloy)**: sign-in events, kept 30 days. The database keeps only `last_login_at`
 - **Stripe**: card data. It never reaches our servers
 
-Schema lives in `hotel_schema_final.md` (v3.1, 35 tables). It does not yet match v0.3 (25 pending changes, S09). Do not change it until Monty says go.
+Schema lives in `hotel_schema_v4.1.md` (39 tables), written to follow v0.3 plus the v4.1 review fixes. The project documentation v0.4 matches it. If they ever differ on tables or columns, the schema file wins. Do not change it until Monty says go.
 
 ## Auth and Access Model
 
@@ -78,5 +78,5 @@ Schema lives in `hotel_schema_final.md` (v3.1, 35 tables). It does not yet match
 9. Taxes and prices are copied onto the reservation so old bookings never change
 10. Tokens (invitation, reset, manage, history) are stored hashed, single-purpose, and never appear in logs, Sentry or PostHog (`/manage`, `/history` paths)
 11. Database changes only through Flyway migrations, forward only
-12. Every automatic refund needs no approver; goodwill refunds follow the Supervisor limit, then Manager / Super Admin
+12. Every automatic refund needs no approver; goodwill refunds follow the Supervisor limit, then Manager / Super Admin. Nobody decides their own approval request
 13. Every reservation starts as Pending. Statuses are Pending, Approved, Cancelled, No Show. Cancelled and No Show are final

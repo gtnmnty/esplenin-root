@@ -2,14 +2,14 @@
 
 ## Approach
 
-Build Esplenin incrementally with a spec-driven workflow. The Esplenin Project Documentation (v0.3) and these context files define what to build, how to build it, and the current state. Implement against them. Do not infer or invent behavior.
+Build Esplenin incrementally with a spec-driven workflow. The Esplenin Project Documentation (v0.4) and these context files define what to build, how to build it, and the current state. Implement against them. Do not infer or invent behavior.
 
 If two sources disagree, the document says which wins:
 - Numbers and limits: S08 Default Values
 - Behavior and permissions: S02 Scope, then S03, then S08 rules
 - Pages and screens: S04
 - Technology choices: S05
-- Database tables and columns: the schema file (`hotel_schema_final.md`)
+- Database tables and columns: the schema file (`hotel_schema_v4.1.md`)
 
 ## Scoping Rules
 
@@ -43,7 +43,7 @@ If a change cannot be verified end to end quickly, the scope is too broad. Split
 Do not modify the following unless explicitly instructed:
 
 - `components/ui/*` (generated shadcn/ui components)
-- `hotel_schema_final.md` (stays unchanged until Monty says go; the 25 pending changes are listed in S09)
+- `hotel_schema_v4.1.md` (stays unchanged until Monty says go; S09 in the project documentation v0.4 matches it)
 - Flyway migrations that have already run (fix mistakes with a new migration)
 - `.env` files and any secrets
 - Lock files (change only through the package manager)
@@ -87,4 +87,4 @@ When behavior changes, the project documentation and the schema file must be upd
 - Before a PR: run `/commit` to save task-scoped commits, then `/ship` to check the branch and draft the PR description
 - Before a release: run `/release` for GO or NO-GO
 
-Project skills live in `skills/<name>/SKILL.md`. Register them under `.claude/skills/` to use them as slash commands.
+Project skills live in `.claude/skills/<name>/SKILL.md` and run as slash commands.

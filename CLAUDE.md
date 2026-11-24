@@ -4,12 +4,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Repository layout
 
-This folder holds one product in three parts. Only `hotel-reservation/` and `frontend/` are their own git repos; this root is not a git repo.
+This folder holds one product in three parts. `hotel-reservation/` and `frontend/` are their own git repos. This root is also a git repo (no remote yet) that tracks the context files, project skills and docs.
 
 - `hotel-reservation/` — Spring Boot 4.1.2 backend (Java 21, Maven wrapper). Its own git repo.
 - `frontend/` — Next.js 16.4.6 + React 19 + TypeScript app, pnpm. Its own git repo. Has its own `AGENTS.md`.
 - `context/` — the project specification and working rules (`architecture.md`, `code-standards.md`, `ai-workflow-rules.md`, `project-overview.md`, `progress-tracker.md`, `test-cases.md`, `ui-context.md`). Read `architecture.md` and `code-standards.md` before designing anything.
-- `skills/` — project-local skill definitions.
+- `.claude/skills/` — project-local skills, run as slash commands (`/architect`, `/kickoff`, and others).
 
 Current state: the backend has entities, enums, and a Flyway setup, but no controllers, services, or repositories yet. `SecurityConfig` and `JwtAuthenticationFilter` are empty stubs, and `db/migration/V1__init.sql` is empty. The frontend is still the default `create-next-app` page. Do not assume features exist because the docs describe them.
 
@@ -84,7 +84,7 @@ These must hold in any change, and the docs list the full set:
 
 ### Schema and spec
 
-The authoritative schema is `hotel_schema_final.md` (v3.1, 35 tables). It is not present in this folder yet. Per `context/architecture.md`, it does not match spec v0.3 (25 pending changes listed in S09), and it must not change until the project owner says so. Behavior comes from the project documentation (S02 scope items, S08 default values). If a requirement is unclear, record it as an open question in `context/progress-tracker.md` instead of guessing.
+The authoritative schema is `hotel_schema_v4.1.md` in this folder (39 tables). It supersedes v3.1 and was written to follow spec v0.3, plus the v4.1 review fixes listed at the top of the file. The project documentation v0.4 matches it. If they ever differ on tables or columns, the schema file wins. It must not change until the project owner says so. Behavior comes from the project documentation (S02 scope items, S08 default values). If a requirement is unclear, record it as an open question in `context/progress-tracker.md` instead of guessing.
 
 ## Conventions
 
@@ -100,10 +100,10 @@ The authoritative schema is `hotel_schema_final.md` (v3.1, 35 tables). It is not
 
 Full rules are in `context/ai-workflow-rules.md`. The ones that matter most day to day:
 
-- Source of truth is `Esplenin_Hotel_Project_Docs_v0.3.pdf` (root); the `context/` files summarize it. When sources disagree: numbers and limits come from S08, behavior and permissions from S02 then S03 then S08 rules, pages from S04, technology from S05, tables from the schema file. S02 is the scope contract, so update it before changing scope.
+- Source of truth is `Esplenin_Hotel_Project_Docs_v0.4.docx` (root); the `context/` files summarize it. When sources disagree: numbers and limits come from S08, behavior and permissions from S02 then S03 then S08 rules, pages from S04, technology from S05, tables from the schema file. S02 is the scope contract, so update it before changing scope.
 - Start a session by reading `context/progress-tracker.md`. Build order follows S14 phases (Phase 0 Foundation first; core booking flow before cache, rate limiting, NGINX and monitoring).
 - A unit is done only when its `Must` cases in `context/test-cases.md` pass, access rules are checked for every role and branch, audit entries and translatable texts exist, and the tracker is updated. Run `./mvnw verify` (backend) and `pnpm build` plus `pnpm lint` (frontend).
-- Project skills in `skills/<name>/SKILL.md` (`/architect`, `/migrate`, `/trace`, `/review`, `/docs-sync`, and others) define the session routine. Register them under `.claude/skills/` to use them as slash commands.
+- Project skills in `.claude/skills/<name>/SKILL.md` (`/architect`, `/migrate`, `/trace`, `/review`, `/docs-sync`, and others) define the session routine. They run as slash commands.
 - One feature per branch; for cross-repo features use the same branch name in both repos and merge the backend first. PRs list the S02 scope numbers they cover.
 
 - Work on one feature unit at a time. Split changes that mix backend and frontend, migrations and business logic, or payments and UI.
