@@ -1,0 +1,21 @@
+# Code lives in its own repos
+/hotel-reservation/
+/frontend/
+
+# IDE and local settings
+.idea/
+.claude/settings.local.json
+
+# Secrets
+.env
+.env.*
+!.env.example
+!.env.*.example
+
+# Unrelated third-party skills (not part of the project workflow)
+.claude/skills/motion-showreel/
+.claude/skills/gpt-image-2/
+.claude/skills/web-video-presentation/
+.claude/skills/beautiful-article/
+.claude/skills/web-design-engineer/
+.claude/skills/kb-retriever/
