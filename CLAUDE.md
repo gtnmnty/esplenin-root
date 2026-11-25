@@ -9,9 +9,10 @@ This folder holds one product in three parts. `hotel-reservation/` and `frontend
 - `hotel-reservation/` — Spring Boot 4.1.2 backend (Java 21, Maven wrapper). Its own git repo.
 - `frontend/` — Next.js 16.4.6 + React 19 + TypeScript app, pnpm. Its own git repo. Has its own `AGENTS.md`.
 - `context/` — the project specification and working rules (`architecture.md`, `code-standards.md`, `ai-workflow-rules.md`, `project-overview.md`, `progress-tracker.md`, `test-cases.md`, `ui-context.md`). Read `architecture.md` and `code-standards.md` before designing anything.
+- `refs/` — UI reference images (homepage, rooms, reservation summary, higher-role screens). Visual inspiration only; `context/ui-context.md` is the spec.
 - `.claude/skills/` — project-local skills, run as slash commands (`/architect`, `/kickoff`, and others).
 
-Current state: the backend has entities, enums, and a Flyway setup, but no controllers, services, or repositories yet. `SecurityConfig` and `JwtAuthenticationFilter` are empty stubs, and `db/migration/V1__init.sql` is empty. The frontend is still the default `create-next-app` page. Do not assume features exist because the docs describe them.
+Current state: the backend is a bare Spring Boot skeleton. Java sources are only `HotelReservationApplication` plus empty `config/`, `controllers/`, `models/` and `service/` folders: no entities, enums, repositories, services, controllers, or security classes yet. `db/migration/V1__init.sql` is filled in (39 tables, matching schema v4.1). The frontend is still the default `create-next-app` page. Do not assume features exist because the docs describe them.
 
 ## Commands
 
@@ -50,11 +51,26 @@ Browser → Vercel (Next.js, forwards `/api/*`) → NGINX → Spring Boot API �
 
 ### Backend structure
 
-Feature packages under `com.esplenin.hotel_reservation`: `auth`, `branches`, `rooms`, `availability`, `reservations`, `payments`, `billing`, `notifications`, `reports`, `audit`, `admin`. Each uses controller → service → repository. Only `config/` and `models/` exist today. Create new feature packages by following that layering; confirm before adding new top-level folders.
+Base package `com.esplenin.hotel_reservation`, organized **by feature** (decided). Each feature package holds its own layers, and shared code sits in top-level folders:
 
-- `models/entities/` — JPA entities. Most extend `BaseEntity`, `TimestampedEntity`, `CreatedEntity`, or `VersionedEntity`.
-- `models/enums/` — status and type enums. The docs say statuses and types are stored as text with CHECK constraints, not as database enums.
-- Entities must never be returned from an API. Map them to DTOs with MapStruct.
+```
+auth/ branches/ rooms/ availability/ reservations/ payments/ billing/
+notifications/ reports/ audit/ admin/        <- one package per feature, each containing:
+    <Feature>Controller, <Feature>Service, <Feature>Repository,
+    dto/ (request/response records), mapper/ (MapStruct), entity/ (JPA entities)
+config/ security/ exceptions/ response/ validation/ utils/   <- shared, no business rules
+```
+
+The empty `controllers/`, `service/` and `models/` folders are a leftover by-layer scaffold; replace them with the feature packages rather than adding code there. Features depend on each other only through the other feature's service (never its repository or entity), and keep helpers package-private where possible. The base entity classes (`BaseEntity`, `TimestampedEntity`, `CreatedEntity`, `VersionedEntity`) are shared and live in a common package.
+
+- Layering: controller → service → repository. Controllers hold HTTP concerns only, services hold business rules and transactions, repositories hold queries. Authorization (method security plus branch/ownership checks) happens in the service layer, not only the controller.
+- Entities map to the Flyway schema; they must not be returned from an API. Use separate request/response DTOs. MapStruct is planned but is not in `pom.xml` yet, so adding it is a dependency decision to confirm.
+- Statuses and types are stored as text with CHECK constraints, so map Java enums with `@Enumerated(EnumType.STRING)`, never ordinal or database enums.
+- Concurrency-sensitive state (inventory per night, reservation overlap) is guarded in SQL (guarded update, exclusion constraint). Do not replace those with application-level checks.
+- Cross-cutting pieces to create under `config/` or a shared package: one RFC 7807 exception handler with stable error codes, a request-ID filter feeding the logs, an injected `Clock`, and the security filter chain with cookie JWT auth and CSRF.
+- Dependencies present: JPA, Flyway (Postgres), Redis, Mail, Security, Thymeleaf (email templates), Validation, Web MVC, Lombok. Not yet in `pom.xml`: a JWT library, Stripe, Cloudinary, MapStruct, Sentry.
+- Config properties live under `app.*` in `application.yaml` (`app.jwt`, `app.cookie`, `app.client-ip`, `app.stripe`, `app.cloudinary`, `app.mail`); bind them with `@ConfigurationProperties` rather than scattered `@Value`.
+- Tests: `TestcontainersConfiguration` provides Postgres and Redis containers; reuse it for integration tests instead of an in-memory database.
 
 ### Access control
 
