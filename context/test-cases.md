@@ -343,18 +343,18 @@ Each case proves the action is refused. The role matrix test covers these too, b
 | Group | Total | Not written | Manual pending | Passing | Failing |
 | --- | --- | --- | --- | --- | --- |
 | Guest: Search and Price | 14 | 14 | 0 | 0 | 0 |
-| Guest: Booking and Payment | 22 | 22 | 0 | 0 | 0 |
+| Guest: Booking and Payment | 24 | 24 | 0 | 0 | 0 |
 | Guest: Manage, Cancel and History | 21 | 21 | 0 | 0 | 0 |
 | Staff: Sign In and Accounts | 18 | 17 | 1 | 0 | 0 |
 | Staff: Reservations and Changes | 21 | 21 | 0 | 0 | 0 |
-| Staff: Check-in, Check-out and Rooms | 12 | 12 | 0 | 0 | 0 |
+| Staff: Check-in, Check-out and Rooms | 13 | 13 | 0 | 0 | 0 |
 | Staff: Payments, Charges and Invoices | 9 | 9 | 0 | 0 | 0 |
-| Supervisor | 10 | 10 | 0 | 0 | 0 |
+| Supervisor | 12 | 12 | 0 | 0 | 0 |
 | Branch Manager | 15 | 14 | 1 | 0 | 0 |
 | Super Admin | 10 | 10 | 0 | 0 | 0 |
 | Critical Scenarios (S13, all must pass) | 15 | 15 | 0 | 0 | 0 |
 | Access and Security | 13 | 12 | 1 | 0 | 0 |
 | Not Allowed (S02 cannot list) | 23 | 23 | 0 | 0 | 0 |
-| **All** | **203** | **200** | **3** | **0** | **0** |
+| **All** | **208** | **205** | **3** | **0** | **0** |
 
-Last updated: 2026-11-21 (no tests written yet)
+Last updated: 2026-11-25 (summary recounted; no tests written yet beyond the context-load smoke test)

@@ -4,21 +4,21 @@ Update this file after every meaningful implementation change.
 
 ## Current Phase
 
-- Not started. Planning is complete (docs v0.4, schema v4.1). Implementation begins with Phase 0 Foundation
+- Phase 0 Foundation under way. Planning is complete (docs v0.4, schema v4.1)
 
 ## Current Goal
 
-- Start Phase 0 (Foundation): repositories, CI, Docker Compose, staging, migrations (a new `V1__init.sql` from schema v4.1), sign-in, roles and branch rules
+- Finish Phase 0 (Foundation): CI, staging, apply V1 to Neon, then sign-in, roles and branch rules. Done so far: repositories, Docker Compose, V1 migration
 
 ## Completed
 
 - Project Documentation v0.4 (2026-11-24): brought in line with schema v4.1. v0.3 (2026-11-15) closed all open items
-- Database schema v4.1 (39 tables) written as `hotel_schema_v4.1.md` (2026-11-24). Not yet run against Postgres. The Neon `public` schema was reset on both branches; the old Flyway V1 and V2 files are still to be replaced by the new V1
+- Database schema v4.1 (39 tables) written as `hotel_schema_v4.1.md` (2026-11-24). `V1__init.sql` now holds the whole schema and was applied cleanly to a throwaway Postgres 18 (2026-11-25). The Neon `public` schema was reset on both branches; the new V1 is not applied to Neon yet
 - Context files drafted from v0.3: project-overview, architecture, code-standards, ui-context, ai-workflow-rules
 
 ## In Progress
 
-- None yet.
+- Phase 0: `V1__init.sql` written from schema v4.1 and applied cleanly to a throwaway Postgres 18 by `./mvnw clean verify` (2026-11-25). Spring Boot Admin removed from `pom.xml` (it broke context startup). Backend layout decided: package by feature. Backend `chore/dev-environment` has 3 commits (remove Spring Boot Admin, pin Mailpit, pin Postgres 18 and Redis 8.2 test containers) waiting to be merged. Root repo now has a GitHub remote. Env files in both repos have the shared values inlined (the `.env.common` files can be deleted)
 
 ## Next Up
 
@@ -26,9 +26,10 @@ Update this file after every meaningful implementation change.
 
 ## Open Questions
 
-- Write `V1__init.sql` from `hotel_schema_v4.1.md` and run it on a throwaway Postgres 18 before it goes near Neon
 - UI: tokens, fonts (all free, OFL) and scaling are set in `ui-context.md`. Still to do: verify contrast of the status chips and `--text-muted` with a checker, and confirm French accent coverage of the fonts
-- Exact folder layout inside both repos is not defined
+- Backend folder layout is decided (by feature). Frontend layout is still not defined
+- Dependencies from `architecture.md` that are not in `pom.xml` yet (jjwt, MapStruct, springdoc, Stripe, Cloudinary, Bucket4j, Resilience4j, Caffeine, ShedLock, Sentry): add each with the feature that first needs it
+- Frontend: `@types/node` is `^20` but the docs say Node 24. Align when frontend work starts
 - Oracle Always Free may reclaim an idle server. Check CPU, network and memory after one week
 
 ## Architecture Decisions
