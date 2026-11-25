@@ -18,7 +18,7 @@ Update this file after every meaningful implementation change.
 
 ## In Progress
 
-- Phase 0: `V1__init.sql` written from schema v4.1 and applied cleanly to a throwaway Postgres 18 by `./mvnw clean verify` (2026-11-25). Spring Boot Admin removed from `pom.xml` (it broke context startup). Backend layout decided: package by feature. Backend `chore/dev-environment` has 3 commits (remove Spring Boot Admin, pin Mailpit, pin Postgres 18 and Redis 8.2 test containers) waiting to be merged. Root repo now has a GitHub remote. Env files in both repos have the shared values inlined (the `.env.common` files can be deleted)
+- Phase 0: `V1__init.sql` written from schema v4.1 and applied cleanly to a throwaway Postgres 18 by `./mvnw clean verify` (2026-11-25). Spring Boot Admin removed from `pom.xml` (it broke context startup). Backend layout decided: package by feature. Backend `chore/dev-environment` (remove Spring Boot Admin, pin Mailpit, pin Postgres 18 and Redis 8.2 test containers) was merged as PR #2. Root repo now has a GitHub remote. Env files in both repos have the shared values inlined (the `.env.common` files can be deleted)
 
 ## Next Up
 
@@ -29,7 +29,6 @@ Update this file after every meaningful implementation change.
 - UI: tokens, fonts (all free, OFL) and scaling are set in `ui-context.md`. Still to do: verify contrast of the status chips and `--text-muted` with a checker, and confirm French accent coverage of the fonts
 - Backend folder layout is decided (by feature). Frontend layout is still not defined
 - Dependencies from `architecture.md` that are not in `pom.xml` yet (jjwt, MapStruct, springdoc, Stripe, Cloudinary, Bucket4j, Resilience4j, Caffeine, ShedLock, Sentry): add each with the feature that first needs it
-- Frontend: `@types/node` is `^20` but the docs say Node 24. Align when frontend work starts
 - Oracle Always Free may reclaim an idle server. Check CPU, network and memory after one week
 
 ## Architecture Decisions
