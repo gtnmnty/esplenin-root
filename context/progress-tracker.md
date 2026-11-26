@@ -8,29 +8,31 @@ Update this file after every meaningful implementation change.
 
 ## Current Goal
 
-- Finish Phase 0 (Foundation): CI, staging, apply V1 to Neon, then sign-in, roles and branch rules. Done so far: repositories, Docker Compose, V1 migration
+- Finish Phase 0 (Foundation): staging, apply V1 to Neon, then sign-in, roles and branch rules. Done so far: repositories, Docker Compose, V1 migration, CI and baseline (Part 1)
 
 ## Completed
 
 - Project Documentation v0.4 (2026-11-24): brought in line with schema v4.1. v0.3 (2026-11-15) closed all open items
 - Database schema v4.1 (39 tables) written as `hotel_schema_v4.1.md` (2026-11-24). `V1__init.sql` now holds the whole schema and was applied cleanly to a throwaway Postgres 18 (2026-11-25). The Neon `public` schema was reset on both branches; the new V1 is not applied to Neon yet
 - Context files drafted from v0.3: project-overview, architecture, code-standards, ui-context, ai-workflow-rules
-
-## In Progress
-
-- Phase 0 Part 1, CI and baseline (2026-11-26):
+- Phase 0 Part 1, CI and baseline (2026-11-26), complete except branch protection (see below):
   - Merged: backend and frontend CI, Dependabot and `.env.example`; Postgres 18 volume fix; local Postgres on host port 5433
   - Backend CI (`verify` and `scan`) also runs on pushes to `main`, with cached scan data (PR #7). Owner confirmed the run on `main` passed. The first backend CI PR (#3) was merged while failing; PR #6 fixed it (dummy datasource settings for tests, correct NVD key option)
   - Frontend: owner confirmed the CI and Dependabot runs in Actions are green
   - The scan suppresses CVE-2022-31691 for `spring-boot-devtools` only: Spring's advisory names IDE YAML editors, not this library
   - Dependabot ignores Spring Boot minor and major updates (pinned to 4.1.x)
   - Branch protection is not enforced: GitHub reports the frontend ruleset needs a GitHub Team organization account on a private repo. Blocking a failing PR is untested. Until then, check that CI is green before every merge
-  - Remaining: review open Dependabot PRs. Do not merge `@types/node` 26 (Node is pinned to 24); check TypeScript 6 before merging
+  - Dependency updates squash merged: backend Spring Boot 4.1.3 and Maven 3.10.2 (owner confirmed both CI jobs passed on `main` at `c753d7f`); frontend Tailwind CSS and `@tailwindcss/turbopack` 4.3.5 (owner's local `pnpm build` passed afterwards)
+  - Held back: React 19.3.1 (the PR does not update `react-dom`; update both together), TypeScript 6 (compatibility not checked), `@types/node` 26 (do not merge, Node is pinned to 24)
+
+## In Progress
+
 - Phase 0: `V1__init.sql` written from schema v4.1 and applied cleanly to a throwaway Postgres 18 by `./mvnw clean verify` (2026-11-25). Spring Boot Admin removed from `pom.xml` (it broke context startup). Backend layout decided: package by feature. Backend `chore/dev-environment` (remove Spring Boot Admin, pin Mailpit, pin Postgres 18 and Redis 8.2 test containers) was merged as PR #2. Root repo now has a GitHub remote. Env files in both repos have the shared values inlined (the `.env.common` files can be deleted)
 
 ## Next Up
 
-- Phase 0 Foundation (S14). Then Phase 1 Guest booking: branches, rooms, availability, price quote, booking form, checkout intent, card payment, webhook, confirmation, manage booking, cancellation, automatic refunds
+- Phase 0 Part 2, backend base: shared code (error handler, request ID, injected `Clock`, base entities, typed settings), deny-by-default security with headers and CORS, and apply V1 to Neon
+- Rest of Phase 0 Foundation (S14): Part 3 sign-in and access, Part 4 first Super Admin and passwords, Part 5 staging. Then Phase 1 Guest booking: branches, rooms, availability, price quote, booking form, checkout intent, card payment, webhook, confirmation, manage booking, cancellation, automatic refunds
 
 ## Open Questions
 
