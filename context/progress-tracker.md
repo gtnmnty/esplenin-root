@@ -18,6 +18,14 @@ Update this file after every meaningful implementation change.
 
 ## In Progress
 
+- Phase 0 Part 1, CI and baseline (2026-11-26):
+  - Merged: backend and frontend CI, Dependabot and `.env.example`; Postgres 18 volume fix; local Postgres on host port 5433
+  - Backend CI (`verify` and `scan`) also runs on pushes to `main`, with cached scan data (PR #7). Owner confirmed the run on `main` passed. The first backend CI PR (#3) was merged while failing; PR #6 fixed it (dummy datasource settings for tests, correct NVD key option)
+  - Frontend: owner confirmed the CI and Dependabot runs in Actions are green
+  - The scan suppresses CVE-2022-31691 for `spring-boot-devtools` only: Spring's advisory names IDE YAML editors, not this library
+  - Dependabot ignores Spring Boot minor and major updates (pinned to 4.1.x)
+  - Branch protection is not enforced: GitHub reports the frontend ruleset needs a GitHub Team organization account on a private repo. Blocking a failing PR is untested. Until then, check that CI is green before every merge
+  - Remaining: review open Dependabot PRs. Do not merge `@types/node` 26 (Node is pinned to 24); check TypeScript 6 before merging
 - Phase 0: `V1__init.sql` written from schema v4.1 and applied cleanly to a throwaway Postgres 18 by `./mvnw clean verify` (2026-11-25). Spring Boot Admin removed from `pom.xml` (it broke context startup). Backend layout decided: package by feature. Backend `chore/dev-environment` (remove Spring Boot Admin, pin Mailpit, pin Postgres 18 and Redis 8.2 test containers) was merged as PR #2. Root repo now has a GitHub remote. Env files in both repos have the shared values inlined (the `.env.common` files can be deleted)
 
 ## Next Up
