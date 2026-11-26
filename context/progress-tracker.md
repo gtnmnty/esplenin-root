@@ -18,7 +18,15 @@ Update this file after every meaningful implementation change.
 
 ## In Progress
 
-- Phase 0: `V1__init.sql` written from schema v4.1 and applied cleanly to a throwaway Postgres 18 by `./mvnw clean verify` (2026-11-25). Spring Boot Admin removed from `pom.xml` (it broke context startup). Backend layout decided: package by feature. Backend `chore/dev-environment` has 3 commits (remove Spring Boot Admin, pin Mailpit, pin Postgres 18 and Redis 8.2 test containers) waiting to be merged. Root repo now has a GitHub remote. Env files in both repos have the shared values inlined (the `.env.common` files can be deleted)
+- Phase 0 Part 1, CI and baseline (2026-11-26):
+  - Merged: backend and frontend CI, Dependabot and `.env.example`; Postgres 18 volume fix; local Postgres on host port 5433
+  - Backend CI (`verify` and `scan`) also runs on pushes to `main`, with cached scan data (PR #7). Owner confirmed the run on `main` passed. The first backend CI PR (#3) was merged while failing; PR #6 fixed it (dummy datasource settings for tests, correct NVD key option)
+  - Frontend: owner confirmed the CI and Dependabot runs in Actions are green
+  - The scan suppresses CVE-2022-31691 for `spring-boot-devtools` only: Spring's advisory names IDE YAML editors, not this library
+  - Dependabot ignores Spring Boot minor and major updates (pinned to 4.1.x)
+  - Branch protection is not enforced: GitHub reports the frontend ruleset needs a GitHub Team organization account on a private repo. Blocking a failing PR is untested. Until then, check that CI is green before every merge
+  - Remaining: review open Dependabot PRs. Do not merge `@types/node` 26 (Node is pinned to 24); check TypeScript 6 before merging
+- Phase 0: `V1__init.sql` written from schema v4.1 and applied cleanly to a throwaway Postgres 18 by `./mvnw clean verify` (2026-11-25). Spring Boot Admin removed from `pom.xml` (it broke context startup). Backend layout decided: package by feature. Backend `chore/dev-environment` (remove Spring Boot Admin, pin Mailpit, pin Postgres 18 and Redis 8.2 test containers) was merged as PR #2. Root repo now has a GitHub remote. Env files in both repos have the shared values inlined (the `.env.common` files can be deleted)
 
 ## Next Up
 
@@ -27,9 +35,7 @@ Update this file after every meaningful implementation change.
 ## Open Questions
 
 - UI: tokens, fonts (all free, OFL) and scaling are set in `ui-context.md`. Still to do: verify contrast of the status chips and `--text-muted` with a checker, and confirm French accent coverage of the fonts
-- Backend folder layout is decided (by feature). Frontend layout is still not defined
 - Dependencies from `architecture.md` that are not in `pom.xml` yet (jjwt, MapStruct, springdoc, Stripe, Cloudinary, Bucket4j, Resilience4j, Caffeine, ShedLock, Sentry): add each with the feature that first needs it
-- Frontend: `@types/node` is `^20` but the docs say Node 24. Align when frontend work starts
 - Oracle Always Free may reclaim an idle server. Check CPU, network and memory after one week
 
 ## Architecture Decisions
@@ -50,6 +56,14 @@ Update this file after every meaningful implementation change.
 - Sign-in events go to Loki only; the database keeps `last_login_at`
 - Self-hosted GitHub runner on the Oracle server; staging exists on the same server
 - `proxy.ts` replaces `middleware.ts`; PDF only for reports
+- Phase 0 decisions (2026-11-26):
+  - Sign-in lock window is counted from the first failure. Needs a first-failure timestamp column on `employees`, added by a V2 migration in Part 3 (owner approved this schema change; update the schema file with it)
+  - Staging is set up in Phase 0 after Parts 1 to 4, with NGINX limited to TLS, routing and trusted client IP
+  - Sign-in rate-limit counts use Bucket4j in memory behind an interface, moving to Redis later
+  - Forgot password: 3 requests per 15 minutes per email, and 5 per 15 minutes per IP. Known and unknown emails get the same response. Add the numbers to S08
+  - Sign-in shows Pending or suspended status only after a correct password. A Pending account has no password, so it gets the generic error
+  - Frontend layout: routes in `app/`, feature code in `features/<name>/`
+  - CI uses GitHub-hosted runners until the Oracle self-hosted runner exists (temporary departure from S12)
 
 ## Session Notes
 

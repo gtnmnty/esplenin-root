@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Repository layout
 
-This folder holds one product in three parts. `hotel-reservation/` and `frontend/` are their own git repos. This root is also a git repo (no remote yet) that tracks the context files, project skills and docs.
+This folder holds one product in three parts. `hotel-reservation/` and `frontend/` are their own git repos. This root is also a git repo (remote: `gtnmnty/esplenin-root`) that tracks the context files, project skills and docs.
 
 - `hotel-reservation/` — Spring Boot 4.1.2 backend (Java 21, Maven wrapper). Its own git repo.
 - `frontend/` — Next.js 16.4.6 + React 19 + TypeScript app, pnpm. Its own git repo. Has its own `AGENTS.md`.
