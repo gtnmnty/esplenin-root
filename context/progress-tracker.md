@@ -27,7 +27,6 @@ Update this file after every meaningful implementation change.
 ## Open Questions
 
 - UI: tokens, fonts (all free, OFL) and scaling are set in `ui-context.md`. Still to do: verify contrast of the status chips and `--text-muted` with a checker, and confirm French accent coverage of the fonts
-- Backend folder layout is decided (by feature). Frontend layout is still not defined
 - Dependencies from `architecture.md` that are not in `pom.xml` yet (jjwt, MapStruct, springdoc, Stripe, Cloudinary, Bucket4j, Resilience4j, Caffeine, ShedLock, Sentry): add each with the feature that first needs it
 - Oracle Always Free may reclaim an idle server. Check CPU, network and memory after one week
 
@@ -49,6 +48,14 @@ Update this file after every meaningful implementation change.
 - Sign-in events go to Loki only; the database keeps `last_login_at`
 - Self-hosted GitHub runner on the Oracle server; staging exists on the same server
 - `proxy.ts` replaces `middleware.ts`; PDF only for reports
+- Phase 0 decisions (2026-11-26):
+  - Sign-in lock window is counted from the first failure. Needs a first-failure timestamp column on `employees`, added by a V2 migration in Part 3 (owner approved this schema change; update the schema file with it)
+  - Staging is set up in Phase 0 after Parts 1 to 4, with NGINX limited to TLS, routing and trusted client IP
+  - Sign-in rate-limit counts use Bucket4j in memory behind an interface, moving to Redis later
+  - Forgot password: 3 requests per 15 minutes per email, and 5 per 15 minutes per IP. Known and unknown emails get the same response. Add the numbers to S08
+  - Sign-in shows Pending or suspended status only after a correct password. A Pending account has no password, so it gets the generic error
+  - Frontend layout: routes in `app/`, feature code in `features/<name>/`
+  - CI uses GitHub-hosted runners until the Oracle self-hosted runner exists (temporary departure from S12)
 
 ## Session Notes
 
