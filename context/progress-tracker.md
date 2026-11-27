@@ -25,7 +25,8 @@ Update this file after every meaningful implementation change.
   - Dependency updates squash merged: backend Spring Boot 4.1.3 and Maven 3.10.2 (owner confirmed both CI jobs passed on `main` at `c753d7f`); frontend Tailwind CSS and `@tailwindcss/turbopack` 4.3.5 (owner's local `pnpm build` passed afterwards)
   - `react` and `react-dom` versions match (both 19.3.0). TypeScript compatibility has been checked (owner, 2026-11-27); the project stays on `^5`. `@types/node` 26 is ignored (Node is pinned to 24)
 
-- Follow-ups (2026-11-27, not committed yet):
+- Follow-ups (2026-11-27), pushed on branches and not merged yet (root `docs/phase-0-followups`, backend `chore/add-dependencies`, frontend `chore/remove-graphql-url`):
+  - `mvnw.cmd` line endings normalized on backend branch `chore/mvnw-line-endings`
   - UI checks: status chip and `--text-muted` contrast computed, and French font subsets checked; results are in `ui-context.md`
   - Forgot-password limits added to S08 in the project document
   - `NEXT_PUBLIC_GRAPHQL_URL` removed from the frontend env files
