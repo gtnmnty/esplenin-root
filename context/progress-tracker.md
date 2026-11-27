@@ -23,7 +23,13 @@ Update this file after every meaningful implementation change.
   - Dependabot ignores Spring Boot minor and major updates (pinned to 4.1.x)
   - Branch protection is not enforced: GitHub reports the frontend ruleset needs a GitHub Team organization account on a private repo. Blocking a failing PR is untested. Until then, check that CI is green before every merge
   - Dependency updates squash merged: backend Spring Boot 4.1.3 and Maven 3.10.2 (owner confirmed both CI jobs passed on `main` at `c753d7f`); frontend Tailwind CSS and `@tailwindcss/turbopack` 4.3.5 (owner's local `pnpm build` passed afterwards)
-  - Held back: React 19.3.1 (the PR does not update `react-dom`; update both together), TypeScript 6 (compatibility not checked), `@types/node` 26 (do not merge, Node is pinned to 24)
+  - `react` and `react-dom` versions match (both 19.3.0). TypeScript compatibility has been checked (owner, 2026-11-27); the project stays on `^5`. `@types/node` 26 is ignored (Node is pinned to 24)
+
+- Follow-ups (2026-11-27, not committed yet):
+  - UI checks: status chip and `--text-muted` contrast computed, and French font subsets checked; results are in `ui-context.md`
+  - Forgot-password limits added to S08 in the project document
+  - `NEXT_PUBLIC_GRAPHQL_URL` removed from the frontend env files
+  - Added to `pom.xml` on backend branch `chore/add-dependencies`: jjwt, MapStruct, springdoc, Stripe, Cloudinary, Bucket4j, Resilience4j, Caffeine, ShedLock, Sentry, and the Spring Boot AspectJ starter (for Resilience4j annotations). `./mvnw verify` passed with Docker running
 
 ## In Progress
 
@@ -36,8 +42,9 @@ Update this file after every meaningful implementation change.
 
 ## Open Questions
 
-- UI: tokens, fonts (all free, OFL) and scaling are set in `ui-context.md`. Still to do: verify contrast of the status chips and `--text-muted` with a checker, and confirm French accent coverage of the fonts
-- Dependencies from `architecture.md` that are not in `pom.xml` yet (jjwt, MapStruct, springdoc, Stripe, Cloudinary, Bucket4j, Resilience4j, Caffeine, ShedLock, Sentry): add each with the feature that first needs it
+- Oracle: the owner does not have an Oracle account yet. It is needed before staging (Part 5)
+- API docs: only the owner (Monty) may access them. How to enforce this is still to be designed in Part 2; nothing enforces it yet beyond the default Spring Security sign-in
+- API docs: decide whether to turn them off in staging and production
 - Oracle Always Free may reclaim an idle server. Check CPU, network and memory after one week
 
 ## Architecture Decisions
@@ -62,7 +69,8 @@ Update this file after every meaningful implementation change.
   - Sign-in lock window is counted from the first failure. Needs a first-failure timestamp column on `employees`, added by a V2 migration in Part 3 (owner approved this schema change; update the schema file with it)
   - Staging is set up in Phase 0 after Parts 1 to 4, with NGINX limited to TLS, routing and trusted client IP
   - Sign-in rate-limit counts use Bucket4j in memory behind an interface, moving to Redis later
-  - Forgot password: 3 requests per 15 minutes per email, and 5 per 15 minutes per IP. Known and unknown emails get the same response. Add the numbers to S08
+  - Forgot password: 3 requests per 15 minutes per email, and 5 per 15 minutes per IP. Known and unknown emails get the same response. Added to S08 on 2026-11-27
+  - API docs (springdoc) are for the owner only (2026-11-27)
   - Sign-in shows Pending or suspended status only after a correct password. A Pending account has no password, so it gets the generic error
   - Frontend layout: routes in `app/`, feature code in `features/<name>/`
   - CI uses GitHub-hosted runners until the Oracle self-hosted runner exists (temporary departure from S12)

@@ -26,7 +26,9 @@ Define as CSS custom properties. Components use tokens only, no hardcoded hex va
 | Error | `--state-error` | `#A64044` | Dusty mauve |
 | Success | `--state-success` | `#2A6151` | Moderate green |
 
-Contrast notes (WCAG 2.1 AA): navy on gold and navy on cream pass. `--text-muted` (#6B6C70) is about 4.9:1 on cream and 5.2:1 on white (hand-calculated; confirm with a contrast checker). The original grey #77787B was about 4.3:1 and failed, so it is kept only for `--status-grey` (used on chips with text and a border). Do not put gold text on cream or white.
+Contrast notes (WCAG 2.1 AA): navy on gold and navy on cream pass. `--text-muted` (#6B6C70) is about 4.9:1 on cream and 5.2:1 on white (computed with the WCAG formula, 2026-11-27). The original grey #77787B was about 4.3:1 and failed, so it is kept only for `--status-grey` (used on chips with text and a border). Do not put gold text on cream or white.
+
+Chip text colors (computed 2026-11-27; AA needs 4.5:1 for normal text): on solid green use white (7.17:1) and on solid red use white (6.11:1); navy fails on both. On solid yellow use navy (6.17:1) and on solid blue use navy (6.66:1); white fails on both. `--status-grey` fails as a solid fill (white 4.41:1, navy 3.23:1) and as text on cream (4.14:1) or white (4.41:1), so grey chips need navy or `--text-muted` text, with grey used only for the border.
 
 Status colors are fixed and the same everywhere (tokens `--status-green`, `--status-yellow`, `--status-red`, `--status-blue`, `--status-grey`):
 
@@ -80,7 +82,7 @@ Charts use one consistent color set with a Day / Week / Month / Year toggle.
 | Code/mono | JetBrains Mono (free, OFL) | `--font-mono` |
 | Last-resort stack | `system-ui, -apple-system, "Segoe UI", sans-serif` | end of every stack |
 
-Load all fonts with `next/font/google` (self-hosted at build, no request to Google from the browser). Read the Next.js 16 font guide in `frontend/node_modules/next/dist/docs/` first. Check French accent coverage on the Google Fonts pages before use.
+Load all fonts with `next/font/google` (self-hosted at build, no request to Google from the browser). Read the Next.js 16 font guide in `frontend/node_modules/next/dist/docs/` first. French coverage checked 2026-11-27: the Google Fonts CSS for Plus Jakarta Sans, Cormorant Garamond and JetBrains Mono declares `latin` (includes U+00C0 to U+00FF, Œ and œ) and `latin-ext` (includes Ÿ). Load both subsets. This checks the declared ranges, not each glyph.
 
 ## Border Radius
 

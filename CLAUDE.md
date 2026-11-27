@@ -64,11 +64,11 @@ config/ security/ exceptions/ response/ validation/ utils/   <- shared, no busin
 The empty `controllers/`, `service/` and `models/` folders are a leftover by-layer scaffold; replace them with the feature packages rather than adding code there. Features depend on each other only through the other feature's service (never its repository or entity), and keep helpers package-private where possible. The base entity classes (`BaseEntity`, `TimestampedEntity`, `CreatedEntity`, `VersionedEntity`) are shared and live in a common package.
 
 - Layering: controller → service → repository. Controllers hold HTTP concerns only, services hold business rules and transactions, repositories hold queries. Authorization (method security plus branch/ownership checks) happens in the service layer, not only the controller.
-- Entities map to the Flyway schema; they must not be returned from an API. Use separate request/response DTOs. MapStruct is planned but is not in `pom.xml` yet, so adding it is a dependency decision to confirm.
+- Entities map to the Flyway schema; they must not be returned from an API. Use separate request/response DTOs. Map between them with MapStruct.
 - Statuses and types are stored as text with CHECK constraints, so map Java enums with `@Enumerated(EnumType.STRING)`, never ordinal or database enums.
 - Concurrency-sensitive state (inventory per night, reservation overlap) is guarded in SQL (guarded update, exclusion constraint). Do not replace those with application-level checks.
 - Cross-cutting pieces to create under `config/` or a shared package: one RFC 7807 exception handler with stable error codes, a request-ID filter feeding the logs, an injected `Clock`, and the security filter chain with cookie JWT auth and CSRF.
-- Dependencies present: JPA, Flyway (Postgres), Redis, Mail, Security, Thymeleaf (email templates), Validation, Web MVC, Lombok. Not yet in `pom.xml`: a JWT library, Stripe, Cloudinary, MapStruct, Sentry.
+- Dependencies present: JPA, Flyway (Postgres), Redis, Mail, Security, Thymeleaf (email templates), Validation, Web MVC, Lombok. Also in `pom.xml` (on branch `chore/add-dependencies` until merged), not used by code yet: jjwt, MapStruct, springdoc, Stripe, Cloudinary, Bucket4j, Resilience4j, Caffeine, ShedLock, Sentry, AspectJ starter.
 - Config properties live under `app.*` in `application.yaml` (`app.jwt`, `app.cookie`, `app.client-ip`, `app.stripe`, `app.cloudinary`, `app.mail`); bind them with `@ConfigurationProperties` rather than scattered `@Value`.
 - Tests: `TestcontainersConfiguration` provides Postgres and Redis containers; reuse it for integration tests instead of an in-memory database.
 
